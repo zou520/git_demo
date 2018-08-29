@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="dao.UserMapper">
+	<!-- 根据名称,用户角色查询信息 -->
+	 <select id="queryName" resultType="SmbmsUser" parameterType="map">
+		select a.id,userCode,userName,gender,phone,(YEAR(NOW())-YEAR(birthday)-1) as age,roleName as userRoleName from 
+		smbms_user a,smbms_role b where a.userRole=b.id
+			<if test="name!=null and name!=''">
+				and userName LIKE concat('%',#{name},'%')
+			</if>
+			<if test="rolgname!=null and rolgname!=0">
+				and userRole LIKE concat('%',#{rolgname},'%')
+			</if>
+		   LIMIT #{currentPageNo},5
+ 	</select>
+	<!-- 查询用户是否存在 -->
+	<select id="query1" resultType="SmbmsUser" parameterType="SmbmsUser">
+		select * from smbms_user where userCode=#{userCode} and userPassword=#{userPassword}
+	</select>
+	<!-- 查询全部用户信息 -->
+	<select id="query" resultType="SmbmsUser" >
+		select a.id,userCode,userName,gender,phone,(YEAR(NOW())-YEAR(birthday)-1) as age,roleName as userRoleName from smbms_user a,smbms_role b where a.userRole=b.id 
+	</select>
+	<!-- 查询全部角色名称 -->
+	<select id="queryRoleName" resultType="SmbmsRole" >
+		select * from smbms_role
+	</select>
+	<!-- 判断编码是否存在 -->
+	<select id="queryCode" resultType="SmbmsUser" parameterType="String">
+		select * from smbms_user where userCode = #{Code}
+	</select>
+	<!-- 添加用户信息 -->
+	<insert id="addUser">
+		insert into smbms_user(userCode,userName,userPassword,gender,birthday,phone,address,userRole,createdBy,creationDate) values(#{userCode},#{userName},#{userPassword},#{gender},#{birthday},#{phone},#{address},#{userRole},#{createdBy},#{creationDate})
+	</insert>
+	<!-- 根据Id查询用户信息 -->
+	<select id="QueryId" resultType="SmbmsUser" parameterType="String">
+		select a.id,userCode,userName,gender,phone,birthday,userRole,roleName as userRoleName,address from 
+		smbms_user a,smbms_role b where a.userRole=b.id and a.id =#{id}
+	</select>
+	<!-- 根据Id修改用户信息 -->
+	<update id="add1User">
+		update smbms_user set userName=#{userName},gender=#{gender},birthday=#{birthday},phone=#{phone},address=#{address},userRole=#{userRole},modifyBy=#{modifyBy},modifyDate=#{modifyDate}  where id=#{id}
+	</update>
+	<!-- 删除用户信息 -->
+	<delete id="DelUser">
+		delete from smbms_user where id in
+		<foreach collection="list" item="iitet" open="(" separator="," close=")">
+			#{iitet}
+		</foreach>
+	</delete>
+	<!-- 查询用户信息表有多少条数据 -->
+	<select id="queryCount" resultType="int" parameterType="map">
+		select COUNT(*) from smbms_user
+		<where>
+			<if test="name!=null and name!=''">
+				and userName LIKE concat('%',#{name},'%')
+			</if>
+			<if test="rolgname!=null and rolgname!=0">
+				and userRole LIKE concat('%',#{rolgname},'%')
+			</if>
+		</where>
+	</select>
+	<!-- 修改用户密码 -->
+	<update id="updPwd">
+		update smbms_user set userPassword=#{userPassword} where id=#{id}
+	</update>
+</mapper>

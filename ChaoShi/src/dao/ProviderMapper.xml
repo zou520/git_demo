@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="dao.ProviderMapper">
+	<!-- 根据供应商编号，名称查询 -->
+<!-- 	<select id="query" resultType="Smbmsprovider" parameterMap="map"> -->
+<!-- 		select * from smbms_provider -->
+<!-- 		<where> -->
+<!-- 			<if test="proCode!=null"> -->
+<!-- 			and proCode LIKE concat('%',#{proCode},'%') -->
+<!-- 			</if> -->
+<!-- 			<if test="proName!=null"> -->
+<!-- 			and proName LIKE concat('%',#{proName},'%') -->
+<!-- 			</if> -->
+<!-- 			<if test="proCode!=null and proName!=null"> -->
+<!-- 			and proCode LIKE concat('%',#{proCode},'%') and proName LIKE concat('%',#{proName},'%') -->
+<!-- 			</if> -->
+<!-- 		</where> -->
+<!-- 	</select> -->
+<select id="query" resultType="Smbmsprovider" parameterType="map">
+	select * from smbms_provider
+		<where>
+			<if test="proCode!=null">
+			and proCode LIKE concat('%',#{proCode},'%')
+			</if>
+			<if test="proName!=null">
+			and proName LIKE concat('%',#{proName},'%')
+			</if>
+			<if test="proCode!=null and proName!=null">
+			and proCode LIKE concat('%',#{proCode},'%') and proName LIKE concat('%',#{proName},'%')
+			</if>
+		</where>
+</select>
+<!-- 添加供应商信息 -->
+<update id="addSmbmsprovider">
+	insert into smbms_provider values(null,#{proCode},#{proName},#{proDesc},#{proContact},#{proPhone},#{proAddress},#{proFax},#{createdBy},#{creationDate},null,null);
+</update>
+</mapper>
